@@ -1,14 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe 'Events API', type: :request do
-  # initialize test data 
+  # initialize test data
+  let!(:user) { create(:user) }
+  let(:headers) { valid_headers }
   let!(:events) { create_list(:event, 10) }
   let(:event_id) { events.first.id }
 
   # Test suite for GET /events
   describe 'GET /events' do
     # make HTTP get request before each example
-    before { get '/events' }
+    before { get '/events', headers: headers }
 
     it 'returns events' do
       # Note `json` is a custom helper to parse JSON responses
@@ -23,7 +25,7 @@ RSpec.describe 'Events API', type: :request do
 
   # Test suite for GET /events/:id
   describe 'GET /events/:id' do
-    before { get "/events/#{event_id}" }
+    before { get "/events/#{event_id}", headers: headers }
 
     context 'when the record exists' do
       it 'returns the todo' do
@@ -52,12 +54,12 @@ RSpec.describe 'Events API', type: :request do
   # Test suite for POST /events
   describe 'POST /events' do
     # valid payload
-    let(:valid_attributes) { { name: 'Learn Elm', description: 'This is the first event', start_date: DateTime.now, end_date: 10.days.from_now} }
+    let(:valid_attributes) { { name: 'Learn Elm', description: 'This is the first event', start_date: DateTime.now, end_date: 10.days.from_now } }
 
     context 'when the request is valid' do
-      before { post '/events', params: valid_attributes }
+      before { post '/events', params: valid_attributes, headers: headers.except("Content-Type") }
 
-      it 'creates a todo' do
+      it 'creates an event' do
         expect(json['name']).to eq('Learn Elm')
       end
 
@@ -67,7 +69,7 @@ RSpec.describe 'Events API', type: :request do
     end
 
     context 'when the request is invalid' do
-      before { post '/events', params: { name: 'Foobar' } }
+      before { post '/events', params: { name: 'Foobar' }, headers: headers.except("Content-Type") }
 
       it 'returns status code 422' do
         expect(response).to have_http_status(422)
@@ -85,7 +87,7 @@ RSpec.describe 'Events API', type: :request do
     let(:valid_attributes) { { name: 'Introduction to React' } }
 
     context 'when the record exists' do
-      before { put "/events/#{event_id}", params: valid_attributes }
+      before { put "/events/#{event_id}", params: valid_attributes, headers: headers.except("Content-Type") }
 
       it 'updates the record' do
         expect(response.body).to be_empty
@@ -99,7 +101,7 @@ RSpec.describe 'Events API', type: :request do
 
   # Test suite for DELETE /events/:id
   describe 'DELETE /events/:id' do
-    before { delete "/events/#{event_id}" }
+    before { delete "/events/#{event_id}", headers: headers.except("Content-Type") }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)

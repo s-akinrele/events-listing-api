@@ -34,7 +34,7 @@ class EventsController < ApplicationController
 
   def event_params
     # whitelist params
-    params.permit(:name, :description, :start_date, :end_date)
+    params.permit(:name, :description, :start_date, :end_date, :image_url)
   end
 
   def set_event

@@ -34,7 +34,18 @@ class EventsController < ApplicationController
 
   def event_params
     # whitelist params
-    params.permit(:name, :description, :start_date, :end_date, :image_url)
+    params.permit(
+      :name,
+      :description,
+      :start_date,
+      :end_date,
+      file: [ :src, :name ]
+    )
+  end
+
+  def upload_image
+    file_name = event_params[:file][:name].split('.')[0]
+    Cloudinary::Uploader.upload(event_params[:file][:src], :public_id => file_name, :resource_type => 'image')
   end
 
   def set_event

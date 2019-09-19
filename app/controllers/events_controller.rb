@@ -1,21 +1,23 @@
 class EventsController < ApplicationController
   before_action :set_event, only: [:show, :update, :destroy]
+  skip_before_action :authorize_request, only: [:index, :show]
 
   # GET /events
   def index
     events = Event.all
-    json_response(events)
+    json_response({events: events}, :ok)
   end
 
   # POST /events
   def create
-    event = Event.create!(event_params)
-    json_response(event, :created)
+    upload = upload_image
+    event = Event.create!(event_params.except(:file).merge(image_url: upload['secure_url']))
+    json_response({event: event}, :created)
   end
 
   # GET /events/:id
   def show
-    json_response(@event)
+    json_response({event: @event}, :ok)
   end
 
   # PUT /events/:id

@@ -5,7 +5,7 @@ class EventsController < ApplicationController
   # GET /events
   def index
     events = Event.all
-    json_response({events: events}, :ok)
+    render json: events, each_serializer: EventSerializer, status: :ok
   end
 
   # POST /events
@@ -46,7 +46,7 @@ class EventsController < ApplicationController
   end
 
   def upload_image
-    file_name = event_params[:file][:name].split('.')[0]
+    file_name = event_params[:file][:name]
     Cloudinary::Uploader.upload(event_params[:file][:src], :public_id => file_name, :resource_type => 'image')
   end
 

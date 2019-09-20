@@ -1,7 +1,8 @@
 class BookingsController < ApplicationController
   def create
     booking = Booking.create!(bookings_params)
-    json_response({booking: booking}, :created)
+    event = booking.event
+    json_response({event: event}, :created)
   end
 
   private

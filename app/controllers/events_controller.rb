@@ -17,7 +17,8 @@ class EventsController < ApplicationController
 
   # GET /events/:id
   def show
-    json_response({event: @event}, :ok)
+    render json: @event, each_serializer: EventSerializer, status: :ok
+    # json_response({event: @event}, :ok)
   end
 
   # PUT /events/:id

@@ -2,7 +2,7 @@ class BookingsController < ApplicationController
   def create
     booking = Booking.create!(bookings_params)
     event = booking.event
-    json_response({event: event}, :created)
+    render json: event, each_serializer: EventSerializer, status: :ok
   end
 
   private
